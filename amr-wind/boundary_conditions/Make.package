@@ -1,0 +1,3 @@
+CEXE_sources += incflo_set_velocity_bcs.cpp
+CEXE_sources += BCInterface.cpp
+CEXE_sources += FixedGradientBC.cpp

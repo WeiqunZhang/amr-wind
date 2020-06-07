@@ -131,6 +131,9 @@ amrex::Real ConvectingTaylorVortex::compute_error(
         const auto& problo = m_mesh.Geom(lev).ProbLoArray();
         const amrex::Real cell_vol = dx[0] * dx[1] * dx[2];
 
+#ifdef AMREX_USE_GPU
+        amrex::Abort("ConvectingTaylorVortex"); // xxxxx DPCPP todo:
+#else
         const auto& fld = field(lev);
         error += amrex::ReduceSum(
             fld, level_mask, 0,
@@ -151,6 +154,7 @@ amrex::Real ConvectingTaylorVortex::compute_error(
                 });
                 return err_fab;
             });
+#endif
     }
 
     amrex::ParallelDescriptor::ReduceRealSum(error);

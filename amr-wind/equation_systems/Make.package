@@ -1,0 +1,2 @@
+CEXE_sources += PDEBase.cpp
+CEXE_sources += DiffusionOps.cpp

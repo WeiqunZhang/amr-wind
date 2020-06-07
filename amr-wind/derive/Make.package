@@ -1,0 +1,6 @@
+CEXE_sources += derive.cpp
+CEXE_sources += field_algebra.cpp
+CEXE_sources += compute_strainrate.cpp
+CEXE_sources += compute_gradient.cpp
+CEXE_sources += compute_laplacian.cpp
+CEXE_sources += compute_curvature.cpp

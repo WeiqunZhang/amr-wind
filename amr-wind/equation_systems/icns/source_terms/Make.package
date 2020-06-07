@@ -1,0 +1,6 @@
+CEXE_sources += ABLForcing.cpp
+CEXE_sources += GeostrophicForcing.cpp
+CEXE_sources += BoussinesqBuoyancy.cpp
+CEXE_sources += DensityBuoyancy.cpp
+CEXE_sources += CoriolisForcing.cpp
+

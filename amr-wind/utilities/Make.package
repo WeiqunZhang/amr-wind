@@ -1,0 +1,10 @@
+CEXE_sources += diagnostics.cpp
+CEXE_sources += io.cpp
+CEXE_sources += PlaneAveraging.cpp
+CEXE_sources += bc_ops.cpp
+CEXE_sources += console_io.cpp
+CEXE_sources += IOManager.cpp
+CEXE_sources += FieldPlaneAveraging.cpp
+CEXE_sources += SecondMomentAveraging.cpp
+CEXE_sources += ThirdMomentAveraging.cpp
+

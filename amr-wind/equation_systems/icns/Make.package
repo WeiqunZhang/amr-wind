@@ -1,0 +1,3 @@
+CEXE_sources += icns_ops.cpp
+CEXE_sources += icns.cpp
+
