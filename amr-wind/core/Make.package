@@ -1,0 +1,5 @@
+CEXE_sources += SimTime.cpp
+CEXE_sources += Field.cpp
+CEXE_sources += IntField.cpp
+CEXE_sources += FieldRepo.cpp
+

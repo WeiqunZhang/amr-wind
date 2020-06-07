@@ -1,0 +1,7 @@
+CEXE_sources += incflo_godunov_ppm.cpp
+CEXE_sources += incflo_MAC_projection.cpp	
+CEXE_sources += incflo_godunov_plm.cpp	
+CEXE_sources += incflo_godunov_predict.cpp
+CEXE_sources += incflo_mol_predict.cpp
+CEXE_sources += incflo_godunov_advection.cpp
+CEXE_sources += incflo_mol_fluxes.cpp
