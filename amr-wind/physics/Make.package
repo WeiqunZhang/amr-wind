@@ -1,0 +1,4 @@
+CEXE_sources += BoussinesqBubble.cpp EkmanSpiral.cpp RayleighTaylorFieldInit.cpp \
+    BoussinesqBubbleFieldInit.cpp FreeStream.cpp SyntheticTurbulence.cpp \
+    ChannelFlow.cpp HybridRANSLESABL.cpp TaylorGreenVortex.cpp \
+    ConvectingTaylorVortex.cpp RayleighTaylor.cpp VortexRing.cpp

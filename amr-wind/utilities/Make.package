@@ -1,0 +1,5 @@
+CEXE_sources += bc_ops.cpp diagnostics.cpp IOManager.cpp console_io.cpp \
+    FieldPlaneAveraging.cpp PostProcessing.cpp DerivedQtyDefs.cpp \
+    FieldPlaneAveragingFine.cpp SecondMomentAveraging.cpp \
+    DerivedQuantity.cpp io.cpp ThirdMomentAveraging.cpp
+

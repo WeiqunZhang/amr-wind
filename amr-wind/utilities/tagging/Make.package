@@ -1,0 +1,4 @@
+CEXE_sources += BoxRefiner.cpp FieldRefinement.cpp QCriterionRefinement.cpp \
+    CartBoxRefinement.cpp    GeometryRefinement.cpp     RefinementCriteria.cpp \
+    CurvatureRefinement.cpp  GradientMagRefinement.cpp  VorticityMagRefinement.cpp \
+    CylinderRefiner.cpp      OversetRefinement.cpp

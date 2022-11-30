@@ -1,0 +1,4 @@
+CEXE_sources += DTUSpinnerSampler.cpp  FreeSurface.cpp  LineSampler.cpp \
+    SamplingContainer.cpp \
+    Enstrophy.cpp  KineticEnergy.cpp  PlaneSampler.cpp  Sampling.cpp \
+    FieldNorms.cpp  LidarSampler.cpp   ProbeSampler.cpp  WaveEnergy.cpp

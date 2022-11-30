@@ -1,0 +1,3 @@
+CEXE_sources += ABLBoundaryPlane.cpp ABLFillInflow.cpp ABLStats.cpp \
+    ABL.cpp ABLFillMPL.cpp ABLWallFunction.cpp ABLFieldInit.cpp \
+    ABLModulatedPowerLaw.cpp MOData.cpp

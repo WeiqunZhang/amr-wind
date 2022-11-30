@@ -1,0 +1,3 @@
+CEXE_sources += BreakingWaves.cpp  RainDrop.cpp      VortexPatchScalarVel.cpp \
+    DamBreak.cpp       SloshingTank.cpp  ZalesakDisk.cpp \
+    MultiPhase.cpp     VortexPatch.cpp   ZalesakDiskScalarVel.cpp

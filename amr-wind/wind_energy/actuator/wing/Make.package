@@ -1,0 +1,1 @@
+CEXE_sources += FixedWing.cpp FlatPlate.cpp wing_ops.cpp
