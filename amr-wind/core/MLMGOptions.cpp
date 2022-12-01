@@ -55,61 +55,20 @@ void MLMGOptions::parse_options(const std::string& prefix)
     pp.query("nsolve_grid_size", nsolve_grid_size);
 }
 
-void MLMGOptions::operator()(amrex::MLMG& mlmg)
+void MLMGOptions::operator()(amrex::Any const& mlmg)
 {
-    mlmg.setVerbose(verbose);
-    mlmg.setMaxIter(max_iter);
-    mlmg.setMaxFmgIter(max_fmg_iters);
-
-    if (do_fixed_iters) {
-        mlmg.setFixedIter(max_iter);
-    }
-
-    mlmg.setNSolve(static_cast<int>(do_nsolve));
-    mlmg.setNSolveGridSize(nsolve_grid_size);
-    mlmg.setPreSmooth(num_pre_smooth);
-    mlmg.setPostSmooth(num_post_smooth);
-    mlmg.setFinalSmooth(num_final_smooth);
-    mlmg.setBottomSmooth(num_bottom_smooth);
-
-    mlmg.setBottomVerbose(bottom_verbose);
-    mlmg.setBottomTolerance(bottom_rel_tol);
-    mlmg.setBottomToleranceAbs(bottom_abs_tol);
-
-    if (bottom_solver_type == "smoother") {
-        mlmg.setBottomSolver(amrex::MLMG::BottomSolver::smoother);
-    } else if (bottom_solver_type == "bicg") {
-        mlmg.setBottomSolver(amrex::MLMG::BottomSolver::bicgstab);
-    } else if (bottom_solver_type == "cg") {
-        mlmg.setBottomSolver(amrex::MLMG::BottomSolver::cg);
-    } else if (bottom_solver_type == "bicgcg") {
-        mlmg.setBottomSolver(amrex::MLMG::BottomSolver::bicgcg);
-    } else if (bottom_solver_type == "cgbicg") {
-        mlmg.setBottomSolver(amrex::MLMG::BottomSolver::cgbicg);
-    } else if (bottom_solver_type == "hypre") {
-#ifdef AMREX_USE_HYPRE
-        mlmg.setBottomSolver(amrex::MLMG::BottomSolver::hypre);
-
-        mlmg.setHypreOptionsNamespace(hypre_namespace);
-        if (hypre_interface == "ij")
-            mlmg.setHypreInterface(amrex::Hypre::Interface::ij);
-        else if (hypre_interface == "semi_structured")
-            mlmg.setHypreInterface(amrex::Hypre::Interface::semi_structed);
-        else if (hypre_interface == "structured")
-            mlmg.setHypreInterface(amrex::Hypre::Interface::structed);
-        else
-            amrex::Abort(
-                "Invalid hypre interface. Valid options: ij semi_structured "
-                "structured");
-#else
-        amrex::Abort("AMR-Wind was not built with hypre support");
-#endif
+    if (mlmg.is<amrex::MLMGT<amrex::MultiFab>*>()) {
+        operator()(*(mlmg.get<amrex::MLMGT<amrex::MultiFab>*>()));
+    } else if (mlmg.is<amrex::MLMGT<amrex::fMultiFab>*>()) {
+        operator()(*(mlmg.get<amrex::MLMGT<amrex::fMultiFab>*>()));
+    } else {
+        amrex::Abort("MLMGOptions: Unknown MLMG");
     }
 }
 
 void MLMGOptions::operator()(Hydro::MacProjector& mac_proj)
 {
-    operator()(mac_proj.getMLMG());
+    operator()(mac_proj.getAnyMLMGPtr());
 }
 
 void MLMGOptions::operator()(Hydro::NodalProjector& nodal_proj)
