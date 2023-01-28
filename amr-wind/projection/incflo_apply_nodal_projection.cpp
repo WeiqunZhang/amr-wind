@@ -35,10 +35,13 @@ incflo::get_projection_bc(Orientation::Side side) const noexcept
         } else {
             auto bc = bctype[Orientation(dir, side)];
             switch (bc) {
-            // case BC::wave_generation:
             case BC::pressure_inflow:
             case BC::pressure_outflow: {
                 r[dir] = LinOpBCType::Dirichlet;
+                break;
+            }
+            case BC::mass_inflow: {
+                r[dir] = LinOpBCType::inflow;
                 break;
             }
             default:

@@ -21,7 +21,7 @@ FieldInfo::FieldInfo(
     , m_nstates(nstates)
     , m_floc(floc)
     , m_bc_values(AMREX_SPACEDIM * 2, amrex::Vector<amrex::Real>(ncomp, 0.0))
-    , m_bc_values_dview(ncomp * AMREX_SPACEDIM * 2)
+    , m_bc_values_dview(static_cast<long>(ncomp) * AMREX_SPACEDIM * 2)
     , m_bcrec(ncomp)
     , m_bcrec_d(ncomp)
     , m_states(FieldInfo::max_field_states, nullptr)
@@ -63,7 +63,8 @@ void FieldInfo::copy_bc_to_device() noexcept
         amrex::Abort("Invalid BC type encountered");
     }
 
-    amrex::Vector<amrex::Real> h_data(m_ncomp * AMREX_SPACEDIM * 2);
+    amrex::Vector<amrex::Real> h_data(
+        static_cast<long>(m_ncomp) * AMREX_SPACEDIM * 2);
 
     // Copy data to a flat array for transfer to device
     {
@@ -213,7 +214,7 @@ void Field::fillpatch_sibling_fields(
     BL_PROFILE("amr-wind::Field::fillpatch array");
     BL_ASSERT(m_info->m_fillpatch_op);
     BL_ASSERT(m_info->bc_initialized() && m_info->m_bc_copied_to_device);
-    BL_ASSERT(m_info->m_ncomp == fields.size());
+    BL_ASSERT(m_info->m_ncomp == static_cast<int>(fields.size()));
     auto& fop = *(m_info->m_fillpatch_op);
     const int nlevels = m_repo.num_active_levels();
     for (int lev = 0; lev < nlevels; ++lev) {
@@ -227,7 +228,7 @@ void Field::fillpatch_sibling_fields(
         }
 
         fop.fillpatch_sibling_fields(
-            lev, time, mfabs, mfabs, cfabs, ng, field_state());
+            lev, time, mfabs, mfabs, cfabs, ng, m_info->m_bcrec, field_state());
     }
 }
 

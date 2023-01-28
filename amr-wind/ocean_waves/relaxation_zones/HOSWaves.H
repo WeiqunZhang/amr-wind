@@ -3,8 +3,7 @@
 
 #include "amr-wind/ocean_waves/relaxation_zones/RelaxationZones.H"
 
-namespace amr_wind {
-namespace ocean_waves {
+namespace amr_wind::ocean_waves {
 
 struct HOSWavesData : public RelaxZonesBaseData
 {
@@ -15,7 +14,7 @@ struct HOSWavesData : public RelaxZonesBaseData
     // Current index
     int HOS_n{0};
     // Time when ow arrays were last changed (last timestep)
-    amrex::Real t_last{0.0};
+    amrex::Real t_last{-1.0};
     // Time of current HOS lists
     amrex::Real HOS_t{0.0};
     // Timestep from HOS data
@@ -31,7 +30,6 @@ struct HOSWaves : public RelaxZonesType
     static std::string identifier() { return "HOSWaves"; }
 };
 
-} // namespace ocean_waves
-} // namespace amr_wind
+} // namespace amr_wind::ocean_waves
 
 #endif /* HOSWAVES_H */
