@@ -164,15 +164,14 @@ void print_mlmg_header(const std::string& key)
                    << std::endl;
 }
 
-void print_mlmg_info(const std::string& solve_name, const amrex::Any& mlmg)
+void print_mlmg_info(const std::string& solve_name, const amrex::MLMG& mlmg)
 {
-    if (mlmg.is<amrex::MLMGT<amrex::MultiFab>*>()) {
-        print_mlmg_info(solve_name, *(mlmg.get<amrex::MLMGT<amrex::MultiFab>*>()));
-    } else if (mlmg.is<amrex::MLMGT<amrex::fMultiFab>*>()) {
-        print_mlmg_info(solve_name, *(mlmg.get<amrex::MLMGT<amrex::fMultiFab>*>()));
-    } else {
-        amrex::Abort("io::print_mlmg_info: unknown MLMG");
-    }
+    const int name_width = 26;
+    amrex::Print() << "  " << std::setw(name_width) << std::left << solve_name
+                   << std::setw(6) << std::right << mlmg.getNumIters()
+                   << std::setw(22) << std::right << mlmg.getInitResidual()
+                   << std::setw(22) << std::right << mlmg.getFinalResidual()
+                   << std::endl;
 }
 
 void print_tpls(std::ostream& out)

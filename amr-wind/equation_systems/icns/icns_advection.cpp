@@ -209,7 +209,7 @@ void MacProjOp::operator()(const FieldState fstate, const amrex::Real dt)
         m_mac_proj->project(m_options.rel_tol, m_options.abs_tol);
     }
 
-    io::print_mlmg_info("MAC_projection", m_mac_proj->getAnyMLMGPtr());
+    io::print_mlmg_info("MAC_projection", m_mac_proj->getMLMG());
 }
 
 void MacProjOp::mac_proj_to_uniform_space(
