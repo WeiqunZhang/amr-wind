@@ -1,1 +1,1 @@
-CEXE_sources += Field.cpp  FieldRepo.cpp  IntField.cpp  MeshMap.cpp  MLMGOptions.cpp  ScratchField.cpp  SimTime.cpp  ViewField.cpp
+CEXE_sources += Field.cpp  FieldRepo.cpp  IntScratchField.cpp  IntField.cpp  MeshMap.cpp  MLMGOptions.cpp  ScratchField.cpp  SimTime.cpp  ViewField.cpp

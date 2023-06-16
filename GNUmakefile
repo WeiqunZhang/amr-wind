@@ -24,6 +24,7 @@ Ppack += $(foreach dir, $(Pdirs_amrex), $(AMREX_HOME)/Src/$(dir)/Make.package)
 
 Pdirs_amrwind := . core core/vs \
     boundary_conditions \
+    boundary_conditions/wall_models \
     convection \
     derive \
     diffusion \

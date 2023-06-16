@@ -1,4 +1,5 @@
 CEXE_sources += ABLForcing.cpp         BoussinesqBuoyancy.cpp  GravityForcing.cpp \
     ABLMeanBoussinesq.cpp  CoriolisForcing.cpp     SynthTurbForcing.cpp \
     ActuatorForcing.cpp    DensityBuoyancy.cpp \
-    BodyForce.cpp          GeostrophicForcing.cpp
+    BodyForce.cpp          GeostrophicForcing.cpp \
+    HurricaneForcing.cpp

@@ -1,1 +1,1 @@
-CEXE_sources += LinearProfile.cpp PowerLawProfile.cpp UDF.cpp
+CEXE_sources += BurggrafLid.cpp LinearProfile.cpp PowerLawProfile.cpp UDF.cpp
