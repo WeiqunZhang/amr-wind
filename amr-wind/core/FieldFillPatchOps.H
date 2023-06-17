@@ -235,6 +235,8 @@ public:
             amrex::PhysBCFunct<amrex::GpuBndryFuncFab<Functor>> physbc(
                 m_mesh.Geom(lev), m_field.bcrec(), bc_functor());
 
+            amrex::Print() << "xxxxx calling amrex::FillPatchSingleLevel AAA name = " << m_field.name() << " ncomp = " << m_field.num_comp() << ", nghost = " << nghost << "\
+\n";
             amrex::FillPatchSingleLevel(
                 mfab, nghost, time, {&fld(lev)}, {time}, 0, 0,
                 m_field.num_comp(), m_mesh.Geom(lev), physbc, 0);
@@ -245,6 +247,8 @@ public:
             amrex::PhysBCFunct<amrex::GpuBndryFuncFab<Functor>> fphysbc(
                 m_mesh.Geom(lev), m_field.bcrec(), bc_functor());
 
+            amrex::Print() << "xxxxx calling amrex::FillPatchTwoleLevel AAA name = " << m_field.name() << " ncomp = " << m_field.num_comp() << ", nghost = " << nghost << "\
+\n";
             amrex::FillPatchTwoLevels(
                 mfab, nghost, time, {&fld(lev - 1)}, {time}, {&fld(lev)},
                 {time}, 0, 0, m_field.num_comp(), m_mesh.Geom(lev - 1),
@@ -310,6 +314,7 @@ public:
             amrex::PhysBCFunct<amrex::GpuBndryFuncFab<Functor>> physbc(
                 m_mesh.Geom(lev), bcrec, bc_functor());
             for (int i = 0; i < static_cast<int>(mfabs.size()); i++) {
+                amrex::Print() << "xxxxx calling amrex::FillPatchSingleLevel BBB\n";
                 amrex::FillPatchSingleLevel(
                     *mfabs[i], nghost, time, {ffabs[i]}, {time}, 0, 0, 1,
                     m_mesh.Geom(lev), physbc, i);
@@ -337,6 +342,7 @@ public:
 
             auto* mapper = field_impl::get_interpolation_operator(itype);
 
+            amrex::Print() << "xxxxx calling amrex::FillPatchTwoleLevel BBB\n";
             amrex::FillPatchTwoLevels(
                 mfabs, nghost, time, {cfabs}, {time}, {ffabs}, {time}, 0, 0, 1,
                 m_mesh.Geom(lev - 1), m_mesh.Geom(lev), cphysbc_arr, idx,

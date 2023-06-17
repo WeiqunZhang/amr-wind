@@ -137,6 +137,17 @@ struct AdvectionOp<ICNS, fvm::Godunov>
         const auto& dof_field = fields.field.state(fstate);
         auto bcrec_device = dof_field.bcrec_device();
 
+        for (int lev = 0; lev < 3; ++lev) {
+            amrex::Print() << "xxxx F has nans: "
+                           << src_term(lev).contains_nan(0,3,amrex::IntVect(0,0,0)) << " "
+                           << src_term(lev).contains_nan(0,3,amrex::IntVect(1,0,0)) << " "
+                           << src_term(lev).contains_nan(0,3,amrex::IntVect(0,1,0)) << " "
+                           << src_term(lev).contains_nan(0,3,amrex::IntVect(0,0,1)) << " "
+                           << src_term(lev).contains_nan(0,3,amrex::IntVect(1,1,1)) << "\n";
+            amrex::Print() << "xxxx sof_field has nans: "
+                           << dof_field(lev).contains_nan() << std::endl;
+        }
+
         for (int lev = 0; lev < repo.num_active_levels(); ++lev) {
             u_mac(lev).setBndry(0.0);
             v_mac(lev).setBndry(0.0);
@@ -282,6 +293,13 @@ struct AdvectionOp<ICNS, fvm::Godunov>
                     dof_field.bcrec_device().data(), repo.mesh().Geom(lev), dt,
                     godunov_use_ppm, godunov_use_forces_in_trans,
                     premac_advection_type);
+
+                    amrex::Print() << "xxxx BBB u_mac[ " << lev << "] has nans? "
+                                   << u_mac(lev).contains_nan(0,1,amrex::IntVect(0)) << "\n"
+                                   << "         v_mac[ " << lev << "] has nans? "
+                                   << v_mac(lev).contains_nan(0,1,amrex::IntVect(0)) << "\n"
+                                   << "         w_mac[ " << lev << "] has nans? "
+                                   << w_mac(lev).contains_nan(0,1,amrex::IntVect(0)) << "\n";
             } else {
                 amrex::Abort("Invalid godunov scheme");
             }

@@ -229,8 +229,21 @@ void incflo::ApplyPredictor(bool incremental_projection)
             // only the old states are used in predictor
             const auto& divtau = icns_fields.diff_term;
 
-            amr_wind::field_ops::add(
-                velocity_forces, divtau, 0, 0, AMREX_SPACEDIM, 0);
+            for (int lev = 0; lev < 3; ++lev) {
+                amrex::Print() << "before add divtau: lev = " << lev << " "
+                               << velocity_forces(lev).contains_nan(0, 3, amrex::IntVect(0)) << " "
+                               << velocity_forces(lev).contains_nan(0, 3, amrex::IntVect(1)) << std::endl;
+            }
+
+//            amr_wind::field_ops::add(
+//                velocity_forces, divtau, 0, 0, AMREX_SPACEDIM, 0);
+
+            for (int lev = 0; lev < 3; ++lev) {
+                amrex::Print() << "after add divtau: lev = " << lev << " "
+                               << velocity_forces(lev).contains_nan(0, 3, amrex::IntVect(0)) << " "
+                               << velocity_forces(lev).contains_nan(0, 3, amrex::IntVect(1))
+                               << " " << divtau(lev).contains_nan(0, 3, amrex::IntVect(0)) << std::endl;
+            }
         }
         // *************************************************************************************
         // Compute explicit diffusive terms
@@ -255,7 +268,16 @@ void incflo::ApplyPredictor(bool incremental_projection)
     if (m_use_godunov) {
         const int nghost_force = 1;
         IntVect ng(nghost_force);
+        amrex::Print() << "xxxxx before src_term fillpatch" << std::endl;
         icns().fields().src_term.fillpatch(m_time.current_time(), ng);
+        amrex::Print() << "xxxxx after src_term fillpatch" << std::endl;
+
+        auto& velocity_forces = icns_fields.src_term;
+        for (int lev = 0; lev < 3; ++lev) {
+            amrex::Print() << "after fillpatch: lev = " << lev << " "
+                           << velocity_forces(lev).contains_nan(0, 3, amrex::IntVect(0)) << " "
+                           << velocity_forces(lev).contains_nan(0, 3, amrex::IntVect(1)) << std::endl;
+        }
 
         for (auto& eqn : scalar_eqns()) {
             eqn->fields().src_term.fillpatch(m_time.current_time(), ng);

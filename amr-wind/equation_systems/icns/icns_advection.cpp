@@ -193,6 +193,17 @@ void MacProjOp::operator()(const FieldState fstate, const amrex::Real dt)
         mac_vec[lev][2] = &w_mac(lev);
     }
 
+    for (int lev = 0; lev < m_repo.num_active_levels(); ++lev) {
+
+        mac_vec[lev][0] = &u_mac(lev);
+        mac_vec[lev][1] = &v_mac(lev);
+        mac_vec[lev][2] = &w_mac(lev);
+
+        amrex::Print() << "xxxx u_mac[" << lev << "] has nans? " << mac_vec[lev][0]->contains_nan(0,1,amrex::IntVect(0)) << "\n"
+                       << "     v_mac[" << lev << "] has nans? " << mac_vec[lev][1]->contains_nan(0,1,amrex::IntVect(0)) << "\n"
+                       << "     w_mac[" << lev << "] has nans? " << mac_vec[lev][2]->contains_nan(0,1,amrex::IntVect(0)) << "\n";
+    }
+
     m_mac_proj->setUMAC(mac_vec);
 
     if (m_has_overset) {
