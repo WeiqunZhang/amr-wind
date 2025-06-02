@@ -17,14 +17,14 @@ struct Point
 // Function to compute the cross product of vectors (p1p2)
 // and (p1p3)
 
-AMREX_FORCE_INLINE amrex::Real
+AMREX_GPU_DEVICE AMREX_FORCE_INLINE amrex::Real
 cross_product(const Point& p1, const Point& p2, const Point& p3)
 {
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
 
 // Function to check if point p lies on segment p1p2
-AMREX_FORCE_INLINE bool
+AMREX_GPU_DEVICE AMREX_FORCE_INLINE bool
 is_point_on_segment(const Point& p, const Point& p1, const Point& p2)
 {
     // Check if point p lies on the line segment p1p2 and
@@ -36,9 +36,9 @@ is_point_on_segment(const Point& p, const Point& p1, const Point& p2)
 
 // Function to compute the winding number of a point with
 // respect to a polygon
-int winding_number(const amrex::Vector<Point>& polygon, const Point& point)
+AMREX_GPU_DEVICE AMREX_FORCE_INLINE
+int winding_number(const Point* polygon, int n, const Point& point)
 {
-    int n = polygon.size();
     int windingNumber = 0;
 
     // Iterate through each edge of the polygon
@@ -71,12 +71,13 @@ int winding_number(const amrex::Vector<Point>& polygon, const Point& point)
 
 // Function to check if a point is inside a polygon using
 // the winding number algorithm
+AMREX_GPU_DEVICE AMREX_FORCE_INLINE
 bool is_point_in_polygon(
-    const amrex::Vector<Point>& polygon, const Point& point)
+    const Point* polygon, int n, const Point& point)
 {
     // Compute the winding number for the point with respect
     // to the polygon
-    return winding_number(polygon, point) != 0;
+    return winding_number(polygon, n, point) != 0;
 }
 
 } // namespace amr_wind::polygon_utils

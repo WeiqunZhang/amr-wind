@@ -109,6 +109,52 @@ void TerrainRefinement::operator()(
     const auto& mterrain_h_arrs = mfab.const_arrays();
     const auto& mterrain_b_arrs = (*m_terrain_blank)(level).const_arrays();
 
+    auto vertical_distance = m_vertical_distance;
+
+    // We could compute and save the following gpu stuff in initialize.
+
+    auto n_poly_outer = int(m_poly_outer.size());
+#ifdef AMREX_USE_GPU
+    amrex::Gpu::DeviceVector<amr_wind::polygon_utils::Point>
+	poly_outer_dv(n_poly_outer);
+    amrex::Gpu::copyAsync(amrex::Gpu::hostToDevice, m_poly_outer.begin(),
+			  m_poly_outer.end(), poly_outer_dv.begin());
+    auto const* p_poly_outer = poly_outer_dv.data();
+#else
+    auto const* p_poly_outer = m_poly_outer.empty() ? nullptr : m_poly_outer.data();
+#endif
+
+    auto n_poly_rings = m_poly_rings.size();
+    amrex::Gpu::PinnedVector<int> offset_poly_rings(n_poly_rings+1);
+    int npts = 0;
+    for (int i = 0; i < n_poly_rings; ++i) {
+	offset_poly_rings[i] = npts;
+	npts += int(m_poly_rings[i].size());
+    }
+    offset_poly_rings.back() = npts;
+
+    amrex::Gpu::PinnedVector<amr_wind::polygon_utils::Point> ring_points
+	(n_poly_rings);
+    for (int i = 0; i < n_poly_rings; ++i) {
+	std::copy(m_poly_rings[i].begin(), m_poly_rings[i].end(),
+		  ring_points.data() + offset_poly_rings[i]);
+    }
+
+#ifdef AMREX_USE_GPU
+    amrex::Gpu::DeviceVector<int> offset_poly_rings_dv(n_poly_rings+1);
+    amrex::Gpu::copyAsync(amrex::Gpu::hostToDevice, offset_poly_rings.begin(),
+			  offset_poly_rings.end(), offset_poly_rings_dv.begin());
+    amrex::Gpu::DeviceVector<amr_wind::polygon_utils::Point> ring_points_dv
+	(n_poly_rings);
+    amrex::Gpu::copyAsync(amrex::Gpu::hostToDevice, ring_points.begin(),
+			  ring_points.end(), ring_points_dv.begin());
+    auto const* p_offset_poly_rings = offset_poly_rings_dv.data();
+    auto const* p_ring_points = ring_points_dv.data();
+#else
+    auto const* p_offset_poly_rings = offset_poly_rings.data();
+    auto const* p_ring_points = ring_points.data();
+#endif
+
     amrex::ParallelFor(
         mfab, [=] AMREX_GPU_DEVICE(int nbx, int i, int j, int k) noexcept {
             const amrex::Real z = prob_lo[2] + (k + 0.5) * dx[2];
@@ -119,17 +165,18 @@ void TerrainRefinement::operator()(
                 prob_lo[0] + (i + 0.5) * dx[0], prob_lo[1] + (j + 0.5) * dx[1],
                 prob_lo[2] + (k + 0.5) * dx[2])};
 
-            const auto testPt =
-                amr_wind::polygon_utils::Point({coord[0], coord[1]});
-            bool in_poly = m_poly_outer.size()
+            const amr_wind::polygon_utils::Point testPt{coord[0], coord[1]};
+            bool in_poly = p_poly_outer
                                ? amr_wind::polygon_utils::is_point_in_polygon(
-                                     m_poly_outer, testPt)
+                                     p_poly_outer, n_poly_outer, testPt)
                                : true;
             if (in_poly) {
-                for (int ring_i = 0; ring_i < m_poly_rings.size(); ++ring_i) {
+                for (int ring_i = 0; ring_i < n_poly_rings; ++ring_i) {
                     const bool in_ring =
                         amr_wind::polygon_utils::is_point_in_polygon(
-                            m_poly_rings[ring_i], testPt);
+                            p_ring_points+p_offset_poly_rings[ring_i],
+			    p_offset_poly_rings[ring_i+1]-p_offset_poly_rings[i],
+			    testPt);
                     if (in_ring) {
                         in_poly = false;
                         break;
@@ -137,12 +184,14 @@ void TerrainRefinement::operator()(
                 }
             }
 
-            if (((cellHt >= -0.5 * dx[2]) && (cellHt <= m_vertical_distance)) &&
+            if (((cellHt >= -0.5 * dx[2]) && (cellHt <= vertical_distance)) &&
                 (mterrain_b_arrs[nbx](i, j, k) < 1) && in_poly &&
                 (tagging_box.contains(coord))) {
                 tag_arrs[nbx](i, j, k) = amrex::TagBox::SET;
             }
         });
+
+    Gpu::streamSynchronize();
 }
 
 } // namespace amr_wind

@@ -1,5 +1,5 @@
-#ifndef FIELDREFINEMENT_H
-#define FIELDREFINEMENT_H
+#ifndef TERRAINREFINEMENT_H
+#define TERRAINREFINEMENT_H
 
 #include "amr-wind/CFDSim.H"
 #include "amr-wind/utilities/tagging/poly_ops.H"
